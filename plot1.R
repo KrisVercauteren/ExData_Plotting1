@@ -19,21 +19,25 @@ if( !file.exists( file.path ) & !file.exists( file.unzip )) {
 
 # 2. Load and filter data 
 # 2.1 Load data into memory
-data <- read.delim( "data/household_power_consumption.txt", sep = ";" )
+data <- read_delim( "data/household_power_consumption.txt", 
+                    delim = ";", 
+                    col_types = list( col_date( format = "%d/%m/%Y" ),
+                                      col_time( format = "" ),
+                                      col_number(),
+                                      col_number(),
+                                      col_number(),
+                                      col_number(),
+                                      col_number(),
+                                      col_number(),
+                                      col_number()))
 
-# 2.2 Change the format of date and time
-data[[ "Date" ]] <- as.Date( data[[ "Date" ]], format = "%d/%m/%Y" )
-
-# 2.3 Filter and retain correct dates
-data_retained = subset( data, data$Date == as.Date( "2007-02-01" ) | data$Date == as.Date( "2007-02-02" ))
-data_retained[[ "Global_active_power" ]] <- as.numeric( data_retained[[ "Global_active_power" ]] )
+# 2.2 Filter and retain correct dates
+data = filter( data, data$Date == as.Date( "2007-02-01" ) | data$Date == as.Date( "2007-02-02" ))
 
 # 3. Create and save plot
 # 3.1 Create plot
-hist( data_retained$Global_active_power, col = "red", xlab = "Global Active Power (kilowatts)", main = "Global Active Power" )
+hist( data$Global_active_power, col = "red", xlab = "Global Active Power (kilowatts)", main = "Global Active Power" )
 
 # 3.2 Save plot as png and close
 dev.copy( png, "plot1.png", width  = 480, height = 480 )
 dev.off()
-
-
